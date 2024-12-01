@@ -1,0 +1,26 @@
+file = open("C:\\Users\\bosonig\\Desktop\\Folders\\Coding\\Advent of Code\\Advent of Code 2024\\input 1.txt")
+data = file.readlines()
+
+data1 = []
+data2 = []
+
+for i in range(len(data)):
+    data[i] = data[i].strip("\n")
+    data[i].split("   ")
+    data1.append(data[i][0:5])
+    data2.append(data[i][8:13])
+
+data1.sort()
+data2.sort()
+
+tot = 0
+for i in range(len(data1)):
+    d = abs(int(data1[i]) - int(data2[i]))
+    tot += d
+print(tot)
+
+t = 0
+for item in data1:
+    c = data2.count(item)
+    t += int(item) * c
+print(t)
