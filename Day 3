@@ -1,0 +1,17 @@
+from re import findall
+
+with open("input 3.txt") as f:
+    data = f.read()
+
+total1, total2, enabled = 0, 0, True
+
+for match in findall(r"mul\((\d+),(\d+)\)|(do\(\))|(don't\(\))", data):
+    if match[2] or match[3]:
+        enabled = bool(match[2])
+    else:
+        x = int(match[0]) * int(match[1])
+        total1 += x
+        total2 += x * enabled
+
+print(total1)
+print(total2)
