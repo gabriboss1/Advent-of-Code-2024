@@ -1,0 +1,19 @@
+def is_good(xs):
+    if xs == sorted(xs) or xs == sorted(xs, reverse=True):
+        return all(1 <= abs(xs[i] - xs[i + 1]) <= 3 for i in range(len(xs) - 1))
+    return False
+
+infile = "input 2.txt"
+with open(infile) as f:
+    lines = f.readlines()
+
+p1, p2 = 0, 0
+
+for line in lines:
+    xs1 = [int(x) for x in line.split()]
+
+    p1 += is_good(xs1)
+    p2 += any(is_good(xs1[:j] + xs1[j+1:]) for j in range(len(xs1)))
+
+print(p1)
+print(p2)
