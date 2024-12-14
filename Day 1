@@ -1,26 +1,11 @@
-file = open("C:\\Users\\bosonig\\Desktop\\Folders\\Coding\\Advent of Code\\Advent of Code 2024\\input 1.txt")
-data = file.readlines()
+with open("input 1.txt") as file:
+    data = [line.strip("\n") for line in file]
 
-data1 = []
-data2 = []
+data1 = sorted(line[:5] for line in data)
+data2 = sorted(line[8:13] for line in data)
 
-for i in range(len(data)):
-    data[i] = data[i].strip("\n")
-    data[i].split("   ")
-    data1.append(data[i][0:5])
-    data2.append(data[i][8:13])
-
-data1.sort()
-data2.sort()
-
-tot = 0
-for i in range(len(data1)):
-    d = abs(int(data1[i]) - int(data2[i]))
-    tot += d
+tot = sum(abs(int(a) - int(b)) for a, b in zip(data1, data2))
 print(tot)
 
-t = 0
-for item in data1:
-    c = data2.count(item)
-    t += int(item) * c
+t = sum(int(item) * data2.count(item) for item in data1)
 print(t)
