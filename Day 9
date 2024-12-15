@@ -1,0 +1,49 @@
+with open("input 9.txt") as f:
+    d = next(f).strip()
+
+blocks = []
+id = 0
+for i, ch in enumerate(d):
+    n = int(ch)
+    if i % 2:
+        blocks += n * [-1]
+    else:
+        blocks += n * [id]
+        id += 1
+
+l, r = 0, len(blocks) - 1
+check1 = 0
+while l <= r:
+    if blocks[l] > -1:
+        check1 += l * blocks[l]
+        l += 1
+    elif blocks[r] > -1:
+        check1 += l * blocks[r]
+        l += 1
+        r -= 1
+    else:
+        r -= 1
+
+r = len(blocks) - 1
+while r > 0:
+    l = 0
+    if blocks[r] > -1:
+        size, id = 0, blocks[r]
+        while blocks[r] == id:
+            size += 1
+            r -= 1
+        free = 0
+        while l <= r:
+            free = free + 1 if blocks[l] == -1 else 0
+            if free >= size:
+                blocks[l - free + 1:l - free + size + 1] = blocks[r + 1:r + size + 1]
+                blocks[r + 1:r + size + 1] = size * [-1]
+                break
+            l += 1
+    else:
+        r -= 1 
+
+check2 = sum(i * id if id > -1 else 0 for i, id in enumerate(blocks))
+
+print(check1)
+print(check2)
