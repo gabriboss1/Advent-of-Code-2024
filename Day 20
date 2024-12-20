@@ -1,0 +1,25 @@
+import numpy as np
+
+with open("input 20.txt") as f:
+    g = np.array([list(l) for l in f.read().splitlines()])
+
+s, e = tuple(np.argwhere(g == 'S')[0]), tuple(np.argwhere(g == 'E')[0])
+t, c, cs = {s: 0}, s, 0
+while c != e:
+    cs += 1
+    for di, dj in [[-1, 0], [0, -1], [0, 1], [1, 0]]:
+        n = (c[0] + di, c[1] + dj)
+        if g[n] in 'SE.' and n not in t:
+            c, t[c] = n, cs
+            break
+
+def ce(coords, cd):
+    return {(coords[0] + di, coords[1] + dj) for di in range(-cd, cd + 1) for dj in range(-cd + abs(di), cd - abs(di) + 1) if (coords[0] + di, coords[1] + dj) in t}
+
+def md(c1, c2):
+    return sum(abs(a - b) for a, b in zip(c1, c2))
+
+def count_cd(cd):
+    return sum(1 for coords in t for other_coords in ce(coords, cd) if t[other_coords] - t[coords] - md(coords, other_coords) >= 100)
+
+print(count_cd(2), count_cd(20))
