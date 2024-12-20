@@ -1,47 +1,42 @@
-import re
 from collections import deque
 
-DIR = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-def ints(s):
-    return [int(x) for x in re.findall('-?\d+', s)]
-
 f = open("input 15.txt").read().strip()
-g, ins = f.split('\n\n')
-g = g.split('\n')
+g, ins = f.split("\n\n")
+g = g.split("\n")
 
-def solve(g, p2):
+for part in [False, True]:
     r, c = len(g), len(g[0])
-    g = [[g[x][y] for y in range(c)] for x in range(r)]
+    grid = [[g[x][y] for y in range(c)] for x in range(r)]
 
-    if p2:
-        big_g = []
+    if part:
+        b = []
         for x in range(r):
             row = []
             for y in range(c):
-                if g[x][y] == '#': row += ['#', '#']
-                elif g[x][y] == 'O': row += ['[', ']']
-                elif g[x][y] == '.': row += ['.', '.']
-                elif g[x][y] == '@': row += ['@', '.']
-            big_g.append(row)
-        g = big_g
+                if grid[x][y] == "#": row += ["#", "#"]
+                elif grid[x][y] == "O": row += ["[", "]"]
+                elif grid[x][y] == ".": row += [".", "."]
+                elif grid[x][y] == "@": row += ["@", "."]
+            b.append(row)
+        grid = b
         c *= 2
 
     for x in range(r):
         for y in range(c):
-            if g[x][y] == '@':
+            if grid[x][y] == "@":
                 sx, sy = x, y
-                g[x][y] = '.'
+                grid[x][y] = "."
 
     cx, cy = sx, sy
     for i in ins:
-        if i == '\n':
+        if i == "\n":
             continue
-        dx, dy = {'^': (-1, 0), '>': (0, 1), 'v': (1, 0), '<': (0, -1)}[i]
+        dx, dy = {"^": (-1, 0), ">": (0, 1), "v": (1, 0), "<": (0, -1)}[i]
         nx, ny = cx + dx, cy + dy
 
-        if g[nx][ny] == '#': continue
-        elif g[nx][ny] == '.': cx, cy = nx, ny
-        elif g[nx][ny] in ['[', ']', 'O']:
+        if grid[nx][ny] == "#": continue
+        elif grid[nx][ny] == ".": cx, cy = nx, ny
+        elif grid[nx][ny] in ["[", "]", "O"]:
             q = deque([(cx, cy)])
             seen = set()
             ok = True
@@ -52,18 +47,18 @@ def solve(g, p2):
                 seen.add((qx, qy))
                 qnx, qny = qx + dx, qy + dy
 
-                if g[qnx][qny] == '#':
+                if grid[qnx][qny] == "#":
                     ok = False
                     break
-                if g[qnx][qny] == 'O':
+                if grid[qnx][qny] == "O":
                     q.append((qnx, qny))
-                if g[qnx][qny] == '[':
+                if grid[qnx][qny] == "[":
                     q.append((qnx, qny))
-                    assert g[qnx][qny + 1] == ']'
+                    assert grid[qnx][qny + 1] == "]"
                     q.append((qnx, qny + 1))
-                if g[qnx][qny] == ']':
+                if grid[qnx][qny] == "]":
                     q.append((qnx, qny))
-                    assert g[qnx][qny - 1] == '['
+                    assert grid[qnx][qny - 1] == "["
                     q.append((qnx, qny - 1))
 
             if not ok: continue
@@ -72,9 +67,9 @@ def solve(g, p2):
                 for qx, qy in sorted(seen):
                     qnx, qny = qx + dx, qy + dy
                     if (qnx, qny) not in seen:
-                        assert g[qnx][qny] == '.'
-                        g[qnx][qny] = g[qx][qy]
-                        g[qx][qy] = '.'
+                        assert grid[qnx][qny] == "."
+                        grid[qnx][qny] = grid[qx][qy]
+                        grid[qx][qy] = "."
                         seen.remove((qx, qy))
             cx += dx
             cy += dy
@@ -82,9 +77,6 @@ def solve(g, p2):
     ans = 0
     for x in range(r):
         for y in range(c):
-            if g[x][y] in ['[', 'O']:
+            if grid[x][y] in ["[", "O"]:
                 ans += 100 * x + y
-    return ans
-
-print(solve(g, False))
-print(solve(g, True))
+    print(ans)
