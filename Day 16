@@ -1,82 +1,74 @@
-from collections import deque
+import heapq
 
-f = open("input 15.txt").read().strip()
-g, ins = f.split("\n\n")
-g = g.split("\n")
+DIRS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
-for part in [False, True]:
-    r, c = len(g), len(g[0])
-    grid = [[g[x][y] for y in range(c)] for x in range(r)]
+A = 0
+F = open("input 16.txt").read().strip()
 
-    if part:
-        b = []
-        for x in range(r):
-            row = []
-            for y in range(c):
-                if grid[x][y] == "#": row += ["#", "#"]
-                elif grid[x][y] == "O": row += ["[", "]"]
-                elif grid[x][y] == ".": row += [".", "."]
-                elif grid[x][y] == "@": row += ["@", "."]
-            b.append(row)
-        grid = b
-        c *= 2
+G = F.split('\n')
+R = len(G)
+C = len(G[0])
+G = [[G[r][c] for c in range(C)] for r in range(R)]
 
-    for x in range(r):
-        for y in range(c):
-            if grid[x][y] == "@":
-                sx, sy = x, y
-                grid[x][y] = "."
+for r in range(R):
+    for c in range(C):
+        if G[r][c] == 'S':
+            SR, SC = r, c
+        if G[r][c] == 'E':
+            ER, EC = r, c
 
-    cx, cy = sx, sy
-    for i in ins:
-        if i == "\n":
-            continue
-        dx, dy = {"^": (-1, 0), ">": (0, 1), "v": (1, 0), "<": (0, -1)}[i]
-        nx, ny = cx + dx, cy + dy
+Q = []
+S = set()
+heapq.heappush(Q, (0, SR, SC, 1))
+D1 = {}
+B = None
+while Q:
+    Dist, Row, Col, Dir = heapq.heappop(Q)
+    if (Row, Col, Dir) not in D1:
+        D1[(Row, Col, Dir)] = Dist
+    if Row == ER and Col == EC and B is None:
+        B = Dist
+    if (Row, Col, Dir) in S:
+        continue
 
-        if grid[nx][ny] == "#": continue
-        elif grid[nx][ny] == ".": cx, cy = nx, ny
-        elif grid[nx][ny] in ["[", "]", "O"]:
-            q = deque([(cx, cy)])
-            seen = set()
-            ok = True
+    S.add((Row, Col, Dir))
+    DR, DC = DIRS[Dir]
+    RR, CC = Row + DR, Col + DC
+    if 0 <= CC < C and 0 <= RR < R and G[RR][CC] != '#':
+        heapq.heappush(Q, (Dist + 1, RR, CC, Dir))
 
-            while q:
-                qx, qy = q.popleft()
-                if (qx, qy) in seen: continue
-                seen.add((qx, qy))
-                qnx, qny = qx + dx, qy + dy
+    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 1) % 4))
+    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 3) % 4))
 
-                if grid[qnx][qny] == "#":
-                    ok = False
-                    break
-                if grid[qnx][qny] == "O":
-                    q.append((qnx, qny))
-                if grid[qnx][qny] == "[":
-                    q.append((qnx, qny))
-                    assert grid[qnx][qny + 1] == "]"
-                    q.append((qnx, qny + 1))
-                if grid[qnx][qny] == "]":
-                    q.append((qnx, qny))
-                    assert grid[qnx][qny - 1] == "["
-                    q.append((qnx, qny - 1))
+print(B)
 
-            if not ok: continue
+Q = []
+S = set()
+for Dir in range(4):
+    heapq.heappush(Q, (0, ER, EC, Dir))
 
-            while seen:
-                for qx, qy in sorted(seen):
-                    qnx, qny = qx + dx, qy + dy
-                    if (qnx, qny) not in seen:
-                        assert grid[qnx][qny] == "."
-                        grid[qnx][qny] = grid[qx][qy]
-                        grid[qx][qy] = "."
-                        seen.remove((qx, qy))
-            cx += dx
-            cy += dy
+D2 = {}
+while Q:
+    Dist, Row, Col, Dir = heapq.heappop(Q)
+    if (Row, Col, Dir) not in D2:
+        D2[(Row, Col, Dir)] = Dist
+    if (Row, Col, Dir) in S:
+        continue
 
-    ans = 0
-    for x in range(r):
-        for y in range(c):
-            if grid[x][y] in ["[", "O"]:
-                ans += 100 * x + y
-    print(ans)
+    S.add((Row, Col, Dir))
+    DR, DC = DIRS[(Dir + 2) % 4]  # Use DIRS instead of D
+    RR, CC = Row + DR, Col + DC
+    if 0 <= CC < C and 0 <= RR < R and G[RR][CC] != '#':
+        heapq.heappush(Q, (Dist + 1, RR, CC, Dir))
+
+    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 1) % 4))
+    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 3) % 4))
+
+OK = set()
+for Row in range(R):
+    for Col in range(C):
+        for Dir in range(4):
+            if (Row, Col, Dir) in D1 and (Row, Col, Dir) in D2 and D1[(Row, Col, Dir)] + D2[(Row, Col, Dir)] == B:
+                OK.add((Row, Col))
+
+print(len(OK))
