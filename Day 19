@@ -1,0 +1,15 @@
+def poss(design, patterns, memo):
+    if design in memo: return memo[design]
+    if not design: return True
+    memo[design] = any(poss(design[len(pt):], patterns, memo) for pt in patterns if design.startswith(pt))
+    return memo[design]
+
+def count(design, patterns, memo):
+    if design in memo: return memo[design]
+    if not design: return 1
+    memo[design] = sum(count(design[len(pt):], patterns, memo) for pt in patterns if design.startswith(pt))
+    return memo[design]
+
+lines = open("input 19.txt").readlines()
+patterns, designs = lines[0].strip().split(", "), [line.strip() for line in lines[2:]]
+print(sum(poss(d, patterns, {}) for d in designs), sum(count(d, patterns, {}) for d in designs))
