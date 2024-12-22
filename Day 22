@@ -1,0 +1,31 @@
+def gen_seq(x):
+    seq = [x]
+    for _ in range(2000):
+        x = (x ^ (64 * x)) % 16777216
+        x = (x ^ (x // 32)) % 16777216
+        x = (x ^ (x * 2048)) % 16777216
+        seq.append(x)
+    return seq
+
+def deltas(seq): return [seq[i + 1] - seq[i] for i in range(len(seq) - 1)]
+
+def score_map(seq, diff):
+    sm = {}
+    for i in range(len(diff) - 3):
+        pat = tuple(diff[i:i + 4])
+        if pat not in sm:
+            sm[pat] = seq[i + 4]
+    return sm
+
+p1, sm = 0, {}
+for line in open("input 22.txt").read().strip().split("\n"):
+    seq = gen_seq(int(line))
+    p1 += seq[-1]
+    seq = [x % 10 for x in seq]
+    diff = deltas(seq)
+    local_map = score_map(seq, diff)
+    for k, v in local_map.items():
+        sm[k] = sm.get(k, 0) + v
+
+print(p1)
+print(max(sm.values()))
