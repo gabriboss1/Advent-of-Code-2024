@@ -1,0 +1,25 @@
+def s(fp):
+    with open(fp) as f:
+        con = [l.strip().split('-') for l in f.readlines()]
+
+    g = {}
+    for a, b in con:
+        g.setdefault(a, set()).add(b)
+        g.setdefault(b, set()).add(a)
+
+    tri = {tuple(sorted([a, b, c])) for a in g for b in g[a] for c in g[a] if b < c and c in g[b]}
+    p1 = sum(any(n[0] == 't' for n in t) for t in tri)
+
+    def bk(r, p, x):
+        if not p and not x: yield r
+        while p:
+            v = p.pop()
+            yield from bk(r | {v}, p & g[v], x & g[v])
+            x.add(v)
+
+    lc = max(bk(set(), set(g), set()), key=len)
+    p2 = ','.join(sorted(lc))
+    return p1, p2
+
+ans = s("input 23.txt")
+print(ans[0], ans[1])
