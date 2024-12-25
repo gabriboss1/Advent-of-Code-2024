@@ -1,0 +1,9 @@
+with open("input 25.txt") as f:
+    data = [group.splitlines() for group in f.read().strip().split("\n\n")]
+
+def heights(s, lock): return [sum(1 for r in (s if lock else s[::-1]) if r[c] == '#') for c in range(len(s[0]))]
+
+locks = [heights(s, True) for s in data if s[0][0] == '#']
+keys = [heights(s, False) for s in data if s[0][0] == '.']
+
+print(sum(all(l + k <= len(data[0]) for l, k in zip(lock, key)) for lock in locks for key in keys))
