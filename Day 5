@@ -1,28 +1,26 @@
 from collections import defaultdict, deque
 
-with open("input 5.txt") as f:
-    data = f.read().strip()
+with open("input 5.txt") as file:
+    data = file.read().strip()
 
 E, ER = defaultdict(set), defaultdict(set)
 edges, queries = data.split('\n\n')
 
 for line in edges.split('\n'):
-    x, y = map(int, line.split('|'))
-    E[y].add(x)
-    ER[x].add(y)
+    a, b = map(int, line.split('|'))
+    E[b].add(a)
+    ER[a].add(b)
 
-p1, p2 = 0, 0
+tot1, tot2 = 0, 0
 
 for q in queries.split('\n'):
     vs = list(map(int, q.split(',')))
     assert len(vs) % 2 == 1
     ok = all(not any(y in E[x] for x in vs[:i] for y in vs[i+1:]) for i, _ in enumerate(vs))
-    
     if ok:
-        p1 += vs[len(vs) // 2]
+        tot1 += vs[len(vs) // 2]
     else:
-        good = []
-        Q = deque()
+        good, Q = [], deque()
         D = {v: len(E[v] & set(vs)) for v in vs}
         for v in vs:
             if D[v] == 0:
@@ -35,7 +33,7 @@ for q in queries.split('\n'):
                     D[y] -= 1
                     if D[y] == 0:
                         Q.append(y)
-        p2 += good[len(good) // 2]
+        tot2 += good[len(good) // 2]
 
-print(p1)
-print(p2)
+print(tot1)
+print(tot2)
