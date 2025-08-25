@@ -1,8 +1,8 @@
 p1 = p2 = 0
-with open("input 6.txt") as f:
-    F = f.readlines()
+with open("input 6.txt") as file:
+    F = [line.strip() for line in file]
 
-R, C = len(F), len(F[0].strip())
+R, C = len(F), len(F[0])
 for r in range(R):
     for c in range(C):
         if F[r][c] == '^':
@@ -10,23 +10,22 @@ for r in range(R):
 
 for i in range(R):
     for j in range(C):
-        r, c = sr, sc
-        d = 0
-        SEEN, SEEN_RC = set(), set()
-        while True:
-            if (r, c, d) in SEEN:
+        r, c, d = sr, sc, 0
+        seen, seen_rc = set(), set()
+        while 1:
+            if (r, c, d) in seen:
                 p2 += 1
                 break
-            SEEN.add((r, c, d))
-            SEEN_RC.add((r, c))
-            dr, dc = [(-1, 0), (0, 1), (1, 0), (0, -1)][d]
-            rr, cc = r + dr, c + dc
-            if not (0 <= rr < R and 0 <= cc < C):
+            seen.add((r, c, d))
+            seen_rc.add((r, c))
+            dr, dc = [(-1,0),(0,1),(1,0),(0,-1)][d]
+            rr, cc = r+dr, c+dc
+            if not (0<=rr<R and 0<=cc<C):
                 if F[i][j] == '#':
-                    p1 = len(SEEN_RC)
+                    p1 = len(seen_rc)
                 break
             if F[rr][cc] == '#' or (rr == i and cc == j):
-                d = (d + 1) % 4
+                d = (d+1)%4
             else:
                 r, c = rr, cc
 
