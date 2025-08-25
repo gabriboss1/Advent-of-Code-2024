@@ -1,74 +1,54 @@
 import heapq
 
-DIRS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+DIRS = [(-1,0),(0,1),(1,0),(0,-1)]
 
-A = 0
-F = open("input 16.txt").read().strip()
+with open("input 16.txt") as file:
+    G = [list(row) for row in file.read().strip().split('\n')]
 
-G = F.split('\n')
-R = len(G)
-C = len(G[0])
-G = [[G[r][c] for c in range(C)] for r in range(R)]
-
+R, C = len(G), len(G[0])
 for r in range(R):
     for c in range(C):
-        if G[r][c] == 'S':
-            SR, SC = r, c
-        if G[r][c] == 'E':
-            ER, EC = r, c
+        if G[r][c] == 'S': SR, SC = r, c
+        if G[r][c] == 'E': ER, EC = r, c
 
-Q = []
-S = set()
+Q, S = [], set()
 heapq.heappush(Q, (0, SR, SC, 1))
 D1 = {}
 B = None
 while Q:
-    Dist, Row, Col, Dir = heapq.heappop(Q)
-    if (Row, Col, Dir) not in D1:
-        D1[(Row, Col, Dir)] = Dist
-    if Row == ER and Col == EC and B is None:
-        B = Dist
-    if (Row, Col, Dir) in S:
-        continue
-
-    S.add((Row, Col, Dir))
-    DR, DC = DIRS[Dir]
-    RR, CC = Row + DR, Col + DC
-    if 0 <= CC < C and 0 <= RR < R and G[RR][CC] != '#':
-        heapq.heappush(Q, (Dist + 1, RR, CC, Dir))
-
-    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 1) % 4))
-    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 3) % 4))
-
+    d, x, y, dir = heapq.heappop(Q)
+    if (x, y, dir) not in D1: D1[(x, y, dir)] = d
+    if x == ER and y == EC and B is None: B = d
+    if (x, y, dir) in S: continue
+    S.add((x, y, dir))
+    dx, dy = DIRS[dir]
+    nx, ny = x + dx, y + dy
+    if 0 <= nx < R and 0 <= ny < C and G[nx][ny] != '#':
+        heapq.heappush(Q, (d+1, nx, ny, dir))
+    heapq.heappush(Q, (d+1000, x, y, (dir+1)%4))
+    heapq.heappush(Q, (d+1000, x, y, (dir+3)%4))
 print(B)
 
-Q = []
-S = set()
-for Dir in range(4):
-    heapq.heappush(Q, (0, ER, EC, Dir))
-
+Q, S = [], set()
+for dir in range(4):
+    heapq.heappush(Q, (0, ER, EC, dir))
 D2 = {}
 while Q:
-    Dist, Row, Col, Dir = heapq.heappop(Q)
-    if (Row, Col, Dir) not in D2:
-        D2[(Row, Col, Dir)] = Dist
-    if (Row, Col, Dir) in S:
-        continue
-
-    S.add((Row, Col, Dir))
-    DR, DC = DIRS[(Dir + 2) % 4]  # Use DIRS instead of D
-    RR, CC = Row + DR, Col + DC
-    if 0 <= CC < C and 0 <= RR < R and G[RR][CC] != '#':
-        heapq.heappush(Q, (Dist + 1, RR, CC, Dir))
-
-    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 1) % 4))
-    heapq.heappush(Q, (Dist + 1000, Row, Col, (Dir + 3) % 4))
+    d, x, y, dir = heapq.heappop(Q)
+    if (x, y, dir) not in D2: D2[(x, y, dir)] = d
+    if (x, y, dir) in S: continue
+    S.add((x, y, dir))
+    dx, dy = DIRS[(dir+2)%4]
+    nx, ny = x + dx, y + dy
+    if 0 <= nx < R and 0 <= ny < C and G[nx][ny] != '#':
+        heapq.heappush(Q, (d+1, nx, ny, dir))
+    heapq.heappush(Q, (d+1000, x, y, (dir+1)%4))
+    heapq.heappush(Q, (d+1000, x, y, (dir+3)%4))
 
 OK = set()
-for Row in range(R):
-    for Col in range(C):
-        for Dir in range(4):
-            if (Row, Col, Dir) in D1 and (Row, Col, Dir) in D2 and D1[(Row, Col, Dir)] + D2[(Row, Col, Dir)] == B:
-                OK.add((Row, Col))
-
+for x in range(R):
+    for y in range(C):
+        for dir in range(4):
+            if (x, y, dir) in D1 and (x, y, dir) in D2 and D1[(x, y, dir)] + D2[(x, y, dir)] == B:
+                OK.add((x, y))
 print(len(OK))
