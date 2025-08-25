@@ -17,15 +17,18 @@ def score_map(seq, diff):
             sm[pat] = seq[i + 4]
     return sm
 
-p1, sm = 0, {}
-for line in open("input 22.txt").read().strip().split("\n"):
+with open("input 22.txt") as file:
+    data = file.read().strip().split("\n")
+
+tot, sm = 0, {}
+for line in data:
     seq = gen_seq(int(line))
-    p1 += seq[-1]
+    tot += seq[-1]
     seq = [x % 10 for x in seq]
     diff = deltas(seq)
     local_map = score_map(seq, diff)
     for k, v in local_map.items():
         sm[k] = sm.get(k, 0) + v
 
-print(p1)
+print(tot)
 print(max(sm.values()))

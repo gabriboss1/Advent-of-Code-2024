@@ -1,7 +1,7 @@
 import numpy as np
 
-with open("input 20.txt") as f:
-    g = np.array([list(l) for l in f.read().splitlines()])
+with open("input 20.txt") as file:
+    g = np.array([list(l) for l in file.read().splitlines()])
 
 s, e = tuple(np.argwhere(g == 'S')[0]), tuple(np.argwhere(g == 'E')[0])
 t, c, cs = {s: 0}, s, 0

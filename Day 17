@@ -1,31 +1,24 @@
-# Part 1 was completely brute forced.
-
 out = []
-A = 32916674
-B = 0
-C = 0
-while A != 0:
-    B = A % 8
-    B = B ^ 1
-    C = A // 2 ** B
-    A = A // 2**3
-    B = B ^ 4
-    B = B ^ C
-    out += [B % 8]
-    
+a = 32916674
+b = 0
+c = 0
+while a != 0:
+    b = a % 8
+    b = b ^ 1
+    c = a // 2 ** b
+    a = a // 2**3
+    b = b ^ 4
+    b = b ^ c
+    out += [b % 8]
+
 print(out)
-
-
-
-# For Part 2:
 
 program = []
 
 def run(a):
     ip, abc = 0, [a, 0, 0]
     def combo(n): return n if n < 4 else abc[n - 4]
-
-    p1 = []
+    data1 = []
     while ip < len(program):
         match program[ip]:
             case 0: abc[0] = abc[0] >> combo(program[ip+1])
@@ -36,11 +29,11 @@ def run(a):
                     ip = program[ip+1]
                     continue
             case 4: abc[1] ^= abc[2]
-            case 5: p1.append(combo(program[ip+1]) & 7)
+            case 5: data1.append(combo(program[ip+1]) & 7)
             case 6: abc[1] = abc[0] >> combo(program[ip+1])
             case 7: abc[2] = abc[0] >> combo(program[ip+1])
         ip += 2
-    return p1
+    return data1
 
 steps = []
 for a in range(2 ** 10):
@@ -49,13 +42,13 @@ for a in range(2 ** 10):
 ll = [[i] for i in range(2 ** 10) if steps[i] == program[0]]
 
 for k in program[1:]:
-    ll_ = []
+    data2 = []
     for l in ll:
         current = l[-1] >> 3
         for i in range(8):
             if steps[(i << 7) + current] == k:
-                ll_.append(l + [(i << 7) + current])
-    ll = ll_
+                data2.append(l + [(i << 7) + current])
+    ll = data2
 
 def recombine(l):
     i, d = l[0], 10

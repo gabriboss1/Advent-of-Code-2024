@@ -1,5 +1,5 @@
-with open("input 25.txt") as f:
-    data = [group.splitlines() for group in f.read().strip().split("\n\n")]
+with open("input 25.txt") as file:
+    data = [group.splitlines() for group in file.read().strip().split("\n\n")]
 
 def heights(s, lock): return [sum(1 for r in (s if lock else s[::-1]) if r[c] == '#') for c in range(len(s[0]))]
 

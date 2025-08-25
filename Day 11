@@ -1,27 +1,26 @@
 from collections import Counter
 
 def transform(cnts):
-    new_cnts = Counter()
+    data = Counter()
     for s, n in cnts.items():
         if s == "0":
-            new_cnts["1"] += n
+            data["1"] += n
         else:
             d = len(s)
             if d % 2 == 0:
                 h = d // 2
                 l, r = str(int(s[:h])), str(int(s[h:]))
-                new_cnts[l] += n
-                new_cnts[r] += n
+                data[l] += n
+                data[r] += n
             else:
                 val = int(s) * 2024
-                new_cnts[str(val)] += n
-    return new_cnts
+                data[str(val)] += n
+    return data
 
-with open("input 11.txt") as f:
-    stones = f.read().strip().split()
+with open("input 11.txt") as file:
+    stones = file.read().strip().split()
 
 cnts = Counter(stones)
-
 for i in range(75):
     cnts = transform(cnts)
     if i == 24:

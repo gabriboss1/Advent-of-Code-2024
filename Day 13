@@ -2,19 +2,19 @@ def calc(ax, ay, bx, by, prizex, prizey):
     det = ax * by - bx * ay
     i = round((by * prizex - bx * prizey) / det)
     j = round((-ay * prizex + ax * prizey) / det)
-
     if ax * i + bx * j == prizex and ay * i + by * j == prizey:
         return i * 3 + j
     return 0
 
-p1 = p2 = 0
+with open("input 13.txt") as file:
+    data = file.read()
 
-with open("input 13.txt") as f:
-    for m in f.read().split("\n\n"):
-        (ax, ay), (bx, by), (prizex, prizey) = ((int(n.strip()[2:]) for n in line.split(":")[1].split(",")) for line in m.splitlines())
-        p1 += calc(ax, ay, bx, by, prizex, prizey)
-        prizex += 10000000000000
-        prizey += 10000000000000
-        p2 += calc(ax, ay, bx, by, prizex, prizey)
+tot = t = 0
+for m in data.split("\n\n"):
+    (ax, ay), (bx, by), (prizex, prizey) = ((int(n.strip()[2:]) for n in line.split(":")[1].split(",")) for line in m.splitlines())
+    tot += calc(ax, ay, bx, by, prizex, prizey)
+    prizex += 10000000000000
+    prizey += 10000000000000
+    t += calc(ax, ay, bx, by, prizex, prizey)
 
-print(p1, p2)
+print(tot, t)

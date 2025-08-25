@@ -1,13 +1,14 @@
 from collections import deque
 
-f = open("input 15.txt").read().strip()
-g, ins = f.split("\n\n")
+with open("input 15.txt") as file:
+    data = file.read().strip()
+
+g, ins = data.split("\n\n")
 g = g.split("\n")
 
 for part in [False, True]:
     r, c = len(g), len(g[0])
     grid = [[g[x][y] for y in range(c)] for x in range(r)]
-
     if part:
         b = []
         for x in range(r):
@@ -20,33 +21,28 @@ for part in [False, True]:
             b.append(row)
         grid = b
         c *= 2
-
     for x in range(r):
         for y in range(c):
             if grid[x][y] == "@":
                 sx, sy = x, y
                 grid[x][y] = "."
-
     cx, cy = sx, sy
     for i in ins:
         if i == "\n":
             continue
         dx, dy = {"^": (-1, 0), ">": (0, 1), "v": (1, 0), "<": (0, -1)}[i]
         nx, ny = cx + dx, cy + dy
-
         if grid[nx][ny] == "#": continue
         elif grid[nx][ny] == ".": cx, cy = nx, ny
         elif grid[nx][ny] in ["[", "]", "O"]:
             q = deque([(cx, cy)])
             seen = set()
             ok = True
-
             while q:
                 qx, qy = q.popleft()
                 if (qx, qy) in seen: continue
                 seen.add((qx, qy))
                 qnx, qny = qx + dx, qy + dy
-
                 if grid[qnx][qny] == "#":
                     ok = False
                     break
@@ -54,26 +50,20 @@ for part in [False, True]:
                     q.append((qnx, qny))
                 if grid[qnx][qny] == "[":
                     q.append((qnx, qny))
-                    assert grid[qnx][qny + 1] == "]"
                     q.append((qnx, qny + 1))
                 if grid[qnx][qny] == "]":
                     q.append((qnx, qny))
-                    assert grid[qnx][qny - 1] == "["
                     q.append((qnx, qny - 1))
-
             if not ok: continue
-
             while seen:
                 for qx, qy in sorted(seen):
                     qnx, qny = qx + dx, qy + dy
                     if (qnx, qny) not in seen:
-                        assert grid[qnx][qny] == "."
                         grid[qnx][qny] = grid[qx][qy]
                         grid[qx][qy] = "."
                         seen.remove((qx, qy))
             cx += dx
             cy += dy
-
     ans = 0
     for x in range(r):
         for y in range(c):

@@ -8,9 +8,7 @@ def bdp(x, y, dx, dy, r, inv):
         if (x, y) == (dx, dy):
             res = mn(res, br(p + "A", r - 1))
         elif (x, y) != inv:
-            q.extend((x + ox, y + oy, p + v)
-                for ox, oy, v in ((-1, 0, "<"), (1, 0, ">"), (0, -1, "^"), (0, 1, "v"))
-                if idir(x, dx, ox) or idir(y, dy, oy))
+            q.extend((x + ox, y + oy, p + v) for ox, oy, v in ((-1, 0, "<"), (1, 0, ">"), (0, -1, "^"), (0, 1, "v")) if idir(x, dx, ox) or idir(y, dy, oy))
     return res
 
 @cache
@@ -26,9 +24,7 @@ def br(p, r):
     return res
 
 def mn(*vals): return min(x for x in vals if x is not None)
-
 def dpad(layout, w): return {v: (i % w, i // w) for i, v in enumerate(layout)}
-
 def idir(st, dst, c): return c * (dst - st) > 0
 
 def chp(x, y, dx, dy, r, inv):
@@ -38,9 +34,7 @@ def chp(x, y, dx, dy, r, inv):
         if (x, y) == (dx, dy):
             res = mn(res, br(p + "A", r))
         elif (x, y) != inv:
-            q.extend((x + ox, y + oy, p + v)
-                for ox, oy, v in ((-1, 0, "<"), (1, 0, ">"), (0, -1, "^"), (0, 1, "v"))
-                if idir(x, dx, ox) or idir(y, dy, oy))
+            q.extend((x + ox, y + oy, p + v) for ox, oy, v in ((-1, 0, "<"), (1, 0, ">"), (0, -1, "^"), (0, 1, "v")) if idir(x, dx, ox) or idir(y, dy, oy))
     return res
 
 def calc(vals, m):
@@ -54,6 +48,7 @@ def calc(vals, m):
         total += res * int(row[:-1].lstrip("0"))
     return total
 
-with open("input 21.txt") as f:
-    vals = [line.strip() for line in f]
-print(calc(vals, 3), calc(vals, 26))
+with open("input 21.txt") as file:
+    data = [line.strip("\n") for line in file]
+
+print(calc(data, 3), calc(data, 26))
