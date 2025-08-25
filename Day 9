@@ -1,49 +1,46 @@
-with open("input 9.txt") as f:
-    d = next(f).strip()
+with open("input 9.txt") as file:
+    d = next(file).strip()
 
-blocks = []
-id = 0
+b, id = [], 0
 for i, ch in enumerate(d):
     n = int(ch)
     if i % 2:
-        blocks += n * [-1]
+        b += n * [-1]
     else:
-        blocks += n * [id]
+        b += n * [id]
         id += 1
 
-l, r = 0, len(blocks) - 1
-check1 = 0
+l, r, c1 = 0, len(b)-1, 0
 while l <= r:
-    if blocks[l] > -1:
-        check1 += l * blocks[l]
+    if b[l] > -1:
+        c1 += l * b[l]
         l += 1
-    elif blocks[r] > -1:
-        check1 += l * blocks[r]
+    elif b[r] > -1:
+        c1 += l * b[r]
         l += 1
         r -= 1
     else:
         r -= 1
 
-r = len(blocks) - 1
+r = len(b)-1
 while r > 0:
     l = 0
-    if blocks[r] > -1:
-        size, id = 0, blocks[r]
-        while blocks[r] == id:
-            size += 1
+    if b[r] > -1:
+        sz, id = 0, b[r]
+        while b[r] == id:
+            sz += 1
             r -= 1
         free = 0
         while l <= r:
-            free = free + 1 if blocks[l] == -1 else 0
-            if free >= size:
-                blocks[l - free + 1:l - free + size + 1] = blocks[r + 1:r + size + 1]
-                blocks[r + 1:r + size + 1] = size * [-1]
+            free = free + 1 if b[l] == -1 else 0
+            if free >= sz:
+                b[l-free+1:l-free+sz+1] = b[r+1:r+sz+1]
+                b[r+1:r+sz+1] = sz * [-1]
                 break
             l += 1
     else:
         r -= 1 
 
-check2 = sum(i * id if id > -1 else 0 for i, id in enumerate(blocks))
-
-print(check1)
-print(check2)
+c2 = sum(i*x if x > -1 else 0 for i,x in enumerate(b))
+print(c1)
+print(c2)
