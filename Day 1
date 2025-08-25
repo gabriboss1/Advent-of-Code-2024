@@ -1,14 +1,11 @@
-with open("input 2.txt") as file:
-    data = [line.strip() for line in file]
+with open("input 1.txt") as file:
+    data = [line.strip("\n") for line in file]
 
-def is_good(xs):
-    return (xs == sorted(xs) or xs == sorted(xs, reverse=True)) and all(1 <= abs(xs[i] - xs[i + 1]) <= 3 for i in range(len(xs) - 1))
+data1 = sorted(line[:5] for line in data)
+data2 = sorted(line[8:13] for line in data)
 
-tot1, tot2 = 0, 0
-for line in data:
-    xs = [int(x) for x in line.split()]
-    tot1 += is_good(xs)
-    tot2 += any(is_good(xs[:j] + xs[j+1:]) for j in range(len(xs)))
+tot = sum(abs(int(a) - int(b)) for a, b in zip(data1, data2))
+print(tot)
 
-print(tot1)
-print(tot2)
+t = sum(int(item) * data2.count(item) for item in data1)
+print(t)
