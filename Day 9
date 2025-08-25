@@ -1,9 +1,9 @@
-with open("input 9.txt") as f:
-    d = next(f).strip()
+with open("input 9.txt") as file:
+    data = next(file).strip()
 
 blocks = []
 id = 0
-for i, ch in enumerate(d):
+for i, ch in enumerate(data):
     n = int(ch)
     if i % 2:
         blocks += n * [-1]
@@ -12,13 +12,13 @@ for i, ch in enumerate(d):
         id += 1
 
 l, r = 0, len(blocks) - 1
-check1 = 0
+tot = 0
 while l <= r:
     if blocks[l] > -1:
-        check1 += l * blocks[l]
+        tot += l * blocks[l]
         l += 1
     elif blocks[r] > -1:
-        check1 += l * blocks[r]
+        tot += l * blocks[r]
         l += 1
         r -= 1
     else:
@@ -43,7 +43,7 @@ while r > 0:
     else:
         r -= 1 
 
-check2 = sum(i * id if id > -1 else 0 for i, id in enumerate(blocks))
+t = sum(i * id if id > -1 else 0 for i, id in enumerate(blocks))
 
-print(check1)
-print(check2)
+print(tot)
+print(t)

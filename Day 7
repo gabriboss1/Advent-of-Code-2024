@@ -1,20 +1,20 @@
-p1 = p2 = 0
-with open("input 7.txt") as f:
-    data = f.read().strip()
+with open("input 7.txt") as file:
+    data = file.read().strip()
 
-def valid(tgt, ns, p2):
+def valid(tgt, ns, t):
     if len(ns) == 1: return ns[0] == tgt
-    if valid(tgt, [ns[0] + ns[1]] + ns[2:], p2): return True
-    if valid(tgt, [ns[0] * ns[1]] + ns[2:], p2): return True
-    if p2 and valid(tgt, [int(str(ns[0]) + str(ns[1]))] + ns[2:], p2): return True
+    if valid(tgt, [ns[0] + ns[1]] + ns[2:], t): return True
+    if valid(tgt, [ns[0] * ns[1]] + ns[2:], t): return True
+    if t and valid(tgt, [int(str(ns[0]) + str(ns[1]))] + ns[2:], t): return True
     return False
 
+tot = t = 0
 for line in data.split('\n'):
     tgt, ns = line.split(':')
     tgt = int(tgt)
     ns = list(map(int, ns.strip().split()))
-    if valid(tgt, ns, p2=False): p1 += tgt
-    if valid(tgt, ns, p2=True): p2 += tgt
+    if valid(tgt, ns, False): tot += tgt
+    if valid(tgt, ns, True): t += tgt
 
-print(p1)
-print(p2)
+print(tot)
+print(t)
