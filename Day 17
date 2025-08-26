@@ -1,18 +1,17 @@
 # Part 1 was completely brute forced.
 
-out = []
-A = 32916674
-B = 0
-C = 0
-while A != 0:
-    B = A % 8
-    B = B ^ 1
-    C = A // 2 ** B
-    A = A // 2**3
-    B = B ^ 4
-    B = B ^ C
-    out += [B % 8]
-    
+out=[]
+a=32916674
+b=0
+c=0
+while a != 0:
+    b=a%8
+    b=b^1
+    c=a//2**b
+    a=a//2**3
+    b=b^4
+    b=b^c
+    out+=[b%8] 
 print(out)
 
 
